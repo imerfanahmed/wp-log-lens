@@ -4,6 +4,14 @@ namespace Imerfanahmed\WpLogLens;
 
 final class WPLogLensClass{
 
+    private $patterns = [
+        'logs' => '/\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}([\+-]\d{4})?\].*/',
+        'current_log' => [
+            '/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}([\+-]\d{4})?)\](?:.*?(\w+)\.|.*?)',
+            ': (.*?)( in .*?:[0-9]+)?$/i'
+        ],
+        'files' => '/\{.*?\,.*?\}/i',
+    ];
     private function __construct() {
         $requestUri = $_SERVER['REQUEST_URI'];
 
@@ -11,6 +19,10 @@ final class WPLogLensClass{
         $logs = fopen(ABSPATH . 'wp-content/debug.log', 'r');
         $logData = fread($logs, filesize(ABSPATH . 'wp-content/debug.log'));
         fclose($logs);
+
+        //match the logs data with patterns
+        preg_match_all($this->patterns['logs'], $logData, $matches);
+        ray($matches);
 
 
         if( $requestUri === '/logs' ) {
