@@ -8,5 +8,4 @@ class WpLogLensClass
     {
         add_action('admin_menu', [$this, 'addAdminMenu']);
     }
-
 }
